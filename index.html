@@ -2,17 +2,90 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My AWS Website</title>
+    <title>Ali Zameer | Cloud Portfolio</title>
     <style>
-        body { font-family: Arial; text-align: center; padding: 50px; background: #232F3E; }
-        h1 { color: #FF9900; }
-        p { color: white; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial; background: #232F3E; color: white; text-align: center; padding: 50px; }
+        h1 { color: #FF9900; font-size: 2.5em; margin-bottom: 10px; }
+        p { color: #ccc; margin-bottom: 30px; }
+        .form-container {
+            background: #2d3e50;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background: #1a2530;
+            color: white;
+            font-size: 1em;
+        }
+        button {
+            background: #FF9900;
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        button:hover { background: #e68900; }
+        #response { margin-top: 20px; font-size: 1em; }
+        .success { color: #2ecc71; }
+        .error { color: #e74c3c; }
     </style>
 </head>
 <body>
-    <h1>Hello from AWS S3! ☁️</h1>
-    <p>Automatically deployed with CI/CD Pipeline! 🚀</p>
-    <p>Built by Ali Zameer</p>
-    <p>updated from my laptop</p>
+    <h1>☁️ Ali Zameer</h1>
+    <p>Cybersecurity Student | Cloud Engineer | Python Developer</p>
+
+    <div class="form-container">
+        <h2 style="color:#FF9900; margin-bottom:20px;">Contact Me</h2>
+        <input type="text" id="name" placeholder="Your Name" />
+        <input type="email" id="email" placeholder="Your Email" />
+        <textarea id="message" rows="5" placeholder="Your Message"></textarea>
+        <button onclick="sendMessage()">Send Message 🚀</button>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            const response = document.getElementById('response');
+
+            if (!name || !email || !message) {
+                response.innerHTML = '<p class="error">Please fill in all fields!</p>';
+                return;
+            }
+
+            response.innerHTML = '<p>Sending...</p>';
+
+            try {
+                const res = await fetch('https://9qjjop1fh6.execute-api.ap-south-1.amazonaws.com/prod/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, message })
+                });
+
+                const data = await res.json();
+                response.innerHTML = '<p class="success">✅ Message sent successfully!</p>';
+                document.getElementById('name').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('message').value = '';
+            } catch (err) {
+                response.innerHTML = '<p class="error">❌ Something went wrong. Try again!</p>';
+            }
+        }
+    </script>
 </body>
 </html>
